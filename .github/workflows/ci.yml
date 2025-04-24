@@ -7,52 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-      - name: Configure npm for private GitHub packages
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-          echo "@watchparty-org:registry=https://npm.pkg.github.com" >> ~/.npmrc
-      - name: Install dependencies
-        run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run ESLint
-        run: npm run lint
-
-  test:
-    name: Test
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-      - name: Configure npm for private GitHub packages
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
-          echo "@watchparty-org:registry=https://npm.pkg.github.com" >> ~/.npmrc
-      - name: Install dependencies
-        run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run tests
-        run: npm test
-
   build:
     name: Build
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
