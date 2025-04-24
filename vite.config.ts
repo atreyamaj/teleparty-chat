@@ -1,8 +1,12 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 
+// GitHub Pages deployment configuration
+const isGitHubPages = process.env.GITHUB_PAGES === 'true'
+const base = isGitHubPages ? '/teleparty-chat/' : './'
+
 export default defineConfig({
-  base: './', // Ensures assets are loaded correctly on GitHub Pages
+  base, // Use appropriate base path for GitHub Pages or local development
   plugins: [
     react({
       babel: {
