@@ -22,7 +22,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.56.1",
     "react-router-dom": "^6.30.0",
-    "teleparty-websocket-lib": "github:watchparty-org/teleparty-WebSocket-lib",
+    "teleparty-websocket-lib": "git+https://github.com/watchparty-org/teleparty-WebSocket-lib.git",
     "uuid": "^11.1.0",
     "zod": "^3.24.3",
     "zustand": "^5.0.3"
