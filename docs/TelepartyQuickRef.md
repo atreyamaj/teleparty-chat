@@ -126,3 +126,46 @@ SocketMessage: Interface representing the structure of messages received via the
 MessageList: Interface representing the object returned by joinChatRoom, containing an array of SessionChatMessage objects.
 SessionChatMessage: Interface representing a single chat message within a session, usually containing details like sender nickname, message body, timestamp, etc. (Exact structure depends on server implementation).
 CallbackFunction: Type definition for the optional callback function used with sendMessage: (error: any | null, responseData?: any) => void.
+
+________________________________________________________
+
+Usage
+Imports:
+
+import { TelepartyClient, SocketEventHandler, SocketMessageTypes, SessionChatMessage } from 'teleparty-websocket-lib';
+Initializing the Client
+
+import { TelepartyClient, SocketEventHandler } from 'teleparty-websocket-lib';
+
+const eventHandler: SocketEventHandler = {
+    onConnectionReady: () => { alert("Connection has been established") },
+    onClose: () => { alert("Socket has been closed") },
+    onMessage: (message) => { alert("Received message: " + message) }
+};
+
+const client = new TelepartyClient(eventHandler);
+Creating a chat room:
+
+let roomId = await client.createChatRoom(nickname, userIcon);
+Joining a chat room:
+
+client.joinChatRoom(nickname, roomId, userIcon);
+Sending a chat message:
+
+client.sendMessage(SocketMessageTypes.SEND_MESSAGE, {
+    body: 'Hello world'
+});
+Updating typing presence:
+
+client.sendMessage(SocketMessageTypes.SET_TYPING_PRESENCE, {
+    typing: true
+});
+Receiving messages:
+
+const eventHandler: SocketEventHandler = {
+    ...
+    onMessage: (message) => {
+        // process message according to type
+    }
+    ...
+};

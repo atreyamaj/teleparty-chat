@@ -28,18 +28,24 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
   useEffect(() => {
     const count = typingUsers.length;
     
+    let newMessage = '';
     if (count === 0) {
-      setMessage('');
+      newMessage = '';
     } else if (count === 1) {
-      setMessage(`${typingUsers[0]} is typing`);
+      newMessage = `${typingUsers[0]} is typing`;
     } else if (count === 2) {
-      setMessage(`${typingUsers[0]} and ${typingUsers[1]} are typing`);
+      newMessage = `${typingUsers[0]} and ${typingUsers[1]} are typing`;
     } else if (count === 3) {
-      setMessage(`${typingUsers[0]}, ${typingUsers[1]} and ${typingUsers[2]} are typing`);
+      newMessage = `${typingUsers[0]}, ${typingUsers[1]} and ${typingUsers[2]} are typing`;
     } else {
-      setMessage(`${typingUsers.length} people are typing`);
+      newMessage = `${typingUsers.length} people are typing`;
     }
-  }, [typingUsers]);
+    
+    // Only update state if the message actually changed
+    if (newMessage !== message) {
+      setMessage(newMessage);
+    }
+  }, [typingUsers, message]);
 
   if (!message) return null;
 

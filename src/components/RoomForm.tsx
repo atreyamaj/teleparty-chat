@@ -15,7 +15,6 @@ interface TabPanelProps {
 
 const TabPanel: React.FC<TabPanelProps> = (props) => {
   const { children, value, index, ...other } = props;
-
   return (
     <div
       role="tabpanel"
@@ -53,55 +52,44 @@ export const RoomForm: React.FC<RoomFormProps> = ({
     roomId: '',
     nickname: ''
   });
-
   useEffect(() => {
     if (initialRoomId) {
       setRoomId(initialRoomId);
       setTabValue(0);
     }
   }, [initialRoomId]);
-
   useEffect(() => {
     if (initialNickname) {
       setNickname(initialNickname);
     }
   }, [initialNickname]);
-
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
-
   const validate = () => {
     const newErrors = {
       roomId: '',
       nickname: ''
     };
-    
     let isValid = true;
-
     if (tabValue === 0 && !roomId.trim()) {
       newErrors.roomId = 'Room ID is required';
       isValid = false;
     }
-
     if (!nickname.trim()) {
       newErrors.nickname = 'Nickname is required';
       isValid = false;
     }
-
     setErrors(newErrors);
     return isValid;
   };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (validate()) {
       const isNewRoom = tabValue === 1;
       onSubmit(roomId, nickname, isNewRoom);
     }
   };
-
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
       <Tabs 
@@ -113,7 +101,6 @@ export const RoomForm: React.FC<RoomFormProps> = ({
         <Tab label="Join Existing Room" {...a11yProps(0)} />
         <Tab label="Create New Room" {...a11yProps(1)} />
       </Tabs>
-
       <TabPanel value={tabValue} index={0}>
         <TextField
           fullWidth
@@ -126,13 +113,11 @@ export const RoomForm: React.FC<RoomFormProps> = ({
           sx={{ mb: 2 }}
         />
       </TabPanel>
-
       <TabPanel value={tabValue} index={1}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           A new room will be created when you click Join
         </Typography>
       </TabPanel>
-
       <TextField
         fullWidth
         label="Your Nickname"
@@ -143,7 +128,9 @@ export const RoomForm: React.FC<RoomFormProps> = ({
         helperText={errors.nickname}
         sx={{ mb: 3 }}
       />
-
+      <Typography variant="caption" color="text.secondary" sx={{ mb: 2 }}>
+        Note: Each user in a room must have a unique nickname.
+      </Typography>
       <Button 
         type="submit" 
         variant="contained" 

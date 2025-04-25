@@ -20,7 +20,6 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) 
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState<AlertColor>('info');
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
     return () => {
       if (timeoutId) {
@@ -28,32 +27,26 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) 
       }
     };
   }, [timeoutId]);
-
   const showSnackbar = (message: string, severity: AlertColor = 'info') => {
     if (timeoutId) {
       clearTimeout(timeoutId);
       setTimeoutId(null);
     }
-
     setMessage(message);
     setSeverity(severity);
     setOpen(true);
-
     const id = setTimeout(() => {
       setOpen(false);
       setTimeoutId(null);
     }, 6000);
-
     setTimeoutId(id);
   };
-
   const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
     setOpen(false);
   };
-
   return (
     <SnackbarContext.Provider value={{ showSnackbar }}>
       {children}

@@ -32,58 +32,45 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   const userIcon = useUserStore(state => state.userIcon);
   const setUserIcon = useUserStore(state => state.setUserIcon);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [tempImageSrc, setTempImageSrc] = useState<string | null>(null);
   const [quality, setQuality] = useState(0.92);
-  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    
     setError(null);
-    
     if (file.size > MAX_FILE_SIZE) {
       setError(`File is too large (max ${MAX_FILE_SIZE / (1024 * 1024)}MB)`);
       return;
     }
-    
     if (!file.type.startsWith('image/')) {
       setError('Only image files are allowed');
       return;
     }
-    
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result as string;
       setTempImageSrc(result);
       setDialogOpen(true);
     };
-    
     reader.onerror = () => {
       setError('Failed to read file');
     };
-    
     reader.readAsDataURL(file);
-    
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
-  
   const handleDeleteAvatar = () => {
     setUserIcon(null);
   };
-  
   const handleDialogClose = () => {
     setDialogOpen(false);
     setTempImageSrc(null);
   };
-  
   const handleSaveImage = () => {
     if (!tempImageSrc) return;
-    
     try {
       if (tempImageSrc.length > MAX_BASE64_SIZE) {
         compressImage(tempImageSrc, quality)
@@ -104,11 +91,9 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       setError('Failed to process image');
     }
   };
-  
   const handleQualityChange = (_event: Event, newValue: number | number[]) => {
     setQuality(newValue as number);
   };
-  
   const compressImage = (src: string, qualityValue: number): Promise<string> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -117,7 +102,6 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
         const MAX_DIMENSION = 400;
         let width = img.width;
         let height = img.height;
-        
         if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
           if (width > height) {
             height = Math.floor(height * (MAX_DIMENSION / width));
@@ -127,7 +111,6 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
             height = MAX_DIMENSION;
           }
         }
-        
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
@@ -135,19 +118,15 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
           reject(new Error('Could not get canvas context'));
           return;
         }
-        
         ctx.drawImage(img, 0, 0, width, height);
         resolve(canvas.toDataURL('image/jpeg', qualityValue));
       };
-      
       img.onerror = () => {
         reject(new Error('Failed to load image'));
       };
-      
       img.src = src;
     });
   };
-  
   return (
     <>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', mb: 2 }}>
@@ -186,7 +165,6 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
             alt="User avatar"
           />
         </Badge>
-        
         {userIcon && (
           <Tooltip title="Remove avatar">
             <IconButton 
@@ -200,14 +178,12 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
             </IconButton>
           </Tooltip>
         )}
-        
         {error && (
           <Typography color="error" variant="caption" sx={{ mt: 1 }}>
             {error}
           </Typography>
         )}
       </Box>
-      
       <Dialog 
         open={dialogOpen} 
         onClose={handleDialogClose}
@@ -227,7 +203,6 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
               sx={{ width: 150, height: 150, mb: 3 }}
               alt="Avatar preview"
             />
-            
             <Typography id="quality-slider" gutterBottom>
               Image Quality: {Math.round(quality * 100)}%
             </Typography>
@@ -241,7 +216,6 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
                 aria-labelledby="quality-slider"
               />
             </Box>
-            
             <Typography variant="caption" color="text.secondary" sx={{ mt: 2 }}>
               Lower quality creates a smaller file size
             </Typography>
