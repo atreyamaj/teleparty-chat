@@ -1,28 +1,32 @@
 # Teleparty Chat App
 
-A React + TypeScript SPA built for the Teleparty Full-Stack Engineer Challenge.
+A modern real-time chat SPA built with React, TypeScript, and Vite for the Teleparty Full-Stack Engineer Challenge.
 
 ## Tech Stack
 
-*   React 19 + TypeScript
-*   Vite
-*   MUI v5
-*   Zustand + Immer + persist
-*   @tanstack/react-virtual
-*   React Hook Form + Zod
-*   `teleparty-websocket-lib`
-*   Vitest + @testing-library/react + MSW
-*   ESLint + Prettier
+- **React 19** + **TypeScript**
+- **Vite** (fast dev/build tooling)
+- **MUI v5** (Material UI)
+- **Zustand** (state management) + **Immer** + **persist**
+- **@tanstack/react-virtual** (virtualized lists)
+- **React Hook Form** + **Zod** (form validation)
+- **teleparty-websocket-lib** (WebSocket client)
+- **Vitest** + **@testing-library/react** + **MSW** (testing)
+- **ESLint** + **Prettier** (linting/formatting)
 
 ## Features
 
-- **Real-time Chat**: Send and receive messages instantly
-- **Room Creation/Joining**: Create new chat rooms or join existing ones
-- **Message History**: View previous messages when joining a room
-- **User Presence**: See who's online and typing indicators
-- **User Avatars**: Upload and manage your profile icon (stored in localStorage)
-- **Dark/Light Mode**: Toggle between themes (stored in localStorage)
-- **Responsive Design**: Works on mobile and desktop devices
+- **Real-time Chat**: Instant message sending and receiving via WebSocket
+- **Room Creation & Joining**: Create new chat rooms or join by ID (UUID)
+- **Message History**: Loads previous messages when joining a room
+- **User Presence**: See who is online and typing (typing indicators)
+- **User Avatars**: Upload, compress, and manage your profile icon (stored in localStorage)
+- **Dark/Light Mode**: Toggle and persist theme preference
+- **Responsive Design**: Mobile and desktop friendly
+- **Connection Status**: Live indicator for WebSocket connection state
+- **Robust Error Handling**: User-friendly errors for connection, joining, and form validation
+- **Comprehensive Testing**: Unit and integration tests for stores, providers, and UI
+- **CI/CD**: Automated lint, test, build, and deploy to GitHub Pages
 
 ## Architecture
 
@@ -47,6 +51,7 @@ A React + TypeScript SPA built for the Teleparty Full-Stack Engineer Challenge.
 │               │ - chatStore │    │ - validation │               │
 │               │ - roomStore │    │              │               │
 │               │ - userStore │    │              │               │
+│               │ - presence  │    │              │               │
 │               └──────┬──────┘    └──────────────┘                │
 │                      │                                          │
 └──────────────────────┼──────────────────────────────────────────┘
@@ -65,73 +70,71 @@ A React + TypeScript SPA built for the Teleparty Full-Stack Engineer Challenge.
            └─────────────────────────┘
 ```
 
-## Available Scripts
+## Usage
 
-| Command          | Description                                  |
-|------------------|----------------------------------------------|
-| `npm install`    | Install dependencies                         |
-| `npm run dev`    | Start development server                     |
-| `npm run build`  | Build for production                         |
-| `npm run preview`| Preview production build                     |
-| `npm run lint`   | Run ESLint                                   |
-| `npm run test`   | Run tests with Vitest                        |
-| `npm run type-check` | Check TypeScript types                   |
+### Available Scripts
 
-## Getting Started
+| Command               | Description                                  |
+|-----------------------|----------------------------------------------|
+| `npm install`         | Install dependencies                         |
+| `npm run dev`         | Start development server                     |
+| `npm run build`       | Build for production                         |
+| `npm run preview`     | Preview production build                     |
+| `npm run lint`        | Run ESLint                                   |
+| `npm run test`        | Run tests with Vitest                        |
+| `npm run type-check`  | Check TypeScript types                       |
+
+### Getting Started
 
 ```bash
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
 
-Visit `http://localhost:5173` to see the application.
-
-## Deployment
-
-The app is automatically deployed to GitHub Pages through the CI/CD pipeline when changes are pushed to the main branch. The deployment workflow consists of:
-
-1. Linting the code
-2. Running tests
-3. Building the application
-4. Deploying to GitHub Pages
+Visit `http://localhost:5173/teleparty-chat/` (or `/` if running locally) to use the app.
 
 ## Project Structure
 
-- `/src/components` - Reusable UI components
-- `/src/pages` - Page-level components
-- `/src/providers` - Context providers
-- `/src/stores` - Zustand state stores
+- `/src/components` - Reusable UI components (chat, forms, avatar, theme, etc.)
+- `/src/pages` - Page-level components (LandingPage, ChatRoomPage)
+- `/src/providers` - Context providers (SocketProvider, ThemeProvider)
+- `/src/stores` - Zustand state stores (chat, room, user, presence)
 - `/src/theme` - Theme configuration
-- `/src/utils` - Utility functions
+- `/src/utils` - Utility functions (debounce, etc.)
+- `/test` - Test setup files
+- `/docs` - Documentation and quick reference
 
-## TODO (Challenge Steps)
+## Testing
 
-- [x] **STEP 2:** Implement socket layer + stores (`SocketProvider`, Zustand stores, tests).
-- [x] **STEP 3:** Implement Landing Page with Room Creation/Joining Form (MUI Tabs, RHF+Zod validation, tests).
-- [x] **STEP 4:** Implement chat room interface (ChatHeader, MessageList with virtualization, MessageInputBar, routing).
-- [x] **STEP 5:** Enhance presence features (typing indicators, load previous messages, user avatars, theme toggle).
-- [x] **STEP 6:** Set up CI/CD pipeline (GitHub Actions, deployment to GitHub Pages).
-- [x] **STEP 7:** Add comprehensive tests (unit, integration, e2e).
+- Run all tests: `npm run test`
+- Coverage reports: `npm run test -- --coverage`
+- Tests cover Zustand stores, providers, and UI components (see `src/stores/__tests__`, `src/components/__tests__`, etc.)
 
-## Open Questions & Future Improvements
+## Deployment
 
-1. **WebSocket Reconnection Strategy**
-   - The current reconnection strategy uses exponential backoff but might benefit from more sophisticated handling of different error cases.
+- CI/CD via GitHub Actions: Lint, test, build, and deploy to GitHub Pages on push to `main`.
+- See `.github/workflows/ci.yml` for details.
 
-2. **Message Persistence**
-   - Messages are currently stored in memory. For production, a more robust persistence layer would be needed.
+## Notable Implementation Details
 
-3. **User Authentication**
-   - Currently using simple nicknames. A proper auth system would be needed for production.
+- **WebSocket Connection**: Robust reconnection with exponential backoff, error handling, and live status indicator.
+- **State Management**: Zustand stores for chat, room, user, and presence, with Immer for immutability and persist for localStorage.
+- **Avatar Upload**: Image compression, quality slider, and validation for avatars.
+- **Typing Indicators**: Real-time typing status with debounce and inactivity timeout.
+- **Form Validation**: Room/nickname validation with user feedback.
+- **Accessibility**: MUI components, ARIA labels, keyboard navigation, and color contrast.
+- **Testing**: Mocked stores, socket, and UI for reliable tests.
 
-4. **Accessibility**
-   - More thorough accessibility testing and improvements are needed, particularly for screen readers.
+## TODO & Future Improvements
 
-5. **End-to-End Encryption**
-   - For secure private chats, implementing E2E encryption would be valuable.
+- [ ] **Message Persistence**: Persist messages beyond memory (e.g., localStorage or backend)
+- [ ] **User Authentication**: Add real user accounts/auth
+- [ ] **Accessibility**: Further improvements for screen readers and a11y
+- [ ] **End-to-End Encryption**: For private/secure chats
+- [ ] **Mobile Native Experience**: Consider React Native or PWA
+- [ ] **Advanced Presence**: Show online users, last seen, etc.
+- [ ] **Better Error Handling**: More granular error messages and recovery
 
-6. **Mobile Native Experience**
-   - Wrapping the application in React Native for a better mobile experience.
+## License
+
+MIT

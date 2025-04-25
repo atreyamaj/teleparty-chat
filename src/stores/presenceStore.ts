@@ -45,7 +45,7 @@ interface PresenceActions {
   reset: () => void;
 }
 
-const TYPING_TIMEOUT = 3000; // 3 seconds
+const TYPING_TIMEOUT = 3000;
 
 const initialState: PresenceState = {
   users: new Map(),
@@ -132,7 +132,6 @@ export const usePresenceStore = create<PresenceState & PresenceActions>()(
 
     setUsersTyping: (users) => {
       set((state) => {
-        // Filter out current user from typing users
         const currentUserNickname = useRoomStore.getState().nickname;
         state.usersTyping = users.filter(user => user.nickname && user.nickname !== currentUserNickname);
         state.typingUserNicknames = state.usersTyping
@@ -146,7 +145,6 @@ export const usePresenceStore = create<PresenceState & PresenceActions>()(
         state.isCurrentUserTyping = typing;
         state.lastTypingTimestamp = typing ? Date.now() : null;
         
-        // Send typing status to server
         const debouncedSetTypingPresence = debounce((isTyping: boolean) => {
           const socketInstance = get().socketInstance;
           if (socketInstance) {
@@ -168,8 +166,6 @@ export const usePresenceStore = create<PresenceState & PresenceActions>()(
         if (now - lastTypingTimestamp > TYPING_TIMEOUT) {
           set((state) => {
             state.isCurrentUserTyping = false;
-            
-            // Notify server that user stopped typing
             const socketInstance = get().socketInstance;
             if (socketInstance) {
               socketInstance.setTypingPresence(false);
@@ -190,18 +186,14 @@ export const usePresenceStore = create<PresenceState & PresenceActions>()(
         state.usersTyping = [];
         state.isCurrentUserTyping = false;
         state.lastTypingTimestamp = null;
-        // Don't reset socketInstance here to avoid disconnection issues
       });
     },
   }))
 );
 
-// Selector to check if anyone is typing
 export const selectIsAnyoneTyping = (state: PresenceState) => state.usersTyping.length > 0;
 
-// Selector to get array of nicknames who are typing
 export const selectTypingUsers = (state: PresenceState) => 
   state.usersTyping.map(user => user.nickname);
 
-// Selector to get array of nicknames who are typing
 export const selectTypingUserNicknames = (state: PresenceState) => state.typingUserNicknames;

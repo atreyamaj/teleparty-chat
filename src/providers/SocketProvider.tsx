@@ -11,14 +11,13 @@ import {
   SocketEventHandler,
   SocketMessageTypes,
   MessageList,
-  SessionChatMessage, // Assuming this type exists based on docs
+  SessionChatMessage,
 } from "teleparty-websocket-lib";
 import { useRoomStore } from "../stores/roomStore";
 import { useChatStore } from "../stores/chatStore";
 import { usePresenceStore, SocketInstanceActions } from "../stores/presenceStore";
-import { useUserStore } from "../stores/userStore"; // Import useUserStore
+import { useUserStore } from "../stores/userStore"; 
 
-// Define the shape of the context data
 interface SocketContextType {
   isConnected: boolean;
   isConnecting: boolean;
